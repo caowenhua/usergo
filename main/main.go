@@ -1,8 +1,13 @@
 package main
 
-import "../network"
+import (
+	"fmt"
+
+	"../network"
+)
 
 func main() {
-	network.Listen()
-	network.Close()
+	network.CListen()
+	fmt.Println("End")
+	network.CClose()
 }
