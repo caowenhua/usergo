@@ -94,13 +94,20 @@ func CShowUser(page, pageCount int64) (userSlice []bean.User) {
 	return
 }
 
-func CDeleteUser(userid int64) error {
-	_, err := dbutil.DbUpdate(cdb, "delete from tb_user where userid = ?", userid)
+func CDeleteUser(userid int64) (string, error) {
+	i, err := dbutil.DbUpdate(cdb, "delete from tb_user where userid = ?", userid)
 	if err == nil {
-		_, e := dbutil.DbUpdate(cdb, "delete from tb_account where userid = ?", userid)
-		return e
+		if i == 0 {
+			return "no such user", err
+		}
+		d, e := dbutil.DbUpdate(cdb, "delete from tb_account where userid = ?", userid)
+		if d == 0 {
+			return "no such user", err
+		} else {
+			return "success", e
+		}
 	}
-	return err
+	return "config error", err
 }
 
 func cfindUserById(userid int64) (user bean.User, err error) {

@@ -93,11 +93,11 @@ func cdeleteUser(hs *routing.HTTPSession) routing.HResult {
 	if err != nil {
 		return hs.MsgResErr2(1, "config error", err)
 	} else {
-		err := db.CDeleteUser(userid)
+		s, err := db.CDeleteUser(userid)
 		if err != nil {
 			return hs.MsgResErr2(1, "no such user", err)
 		} else {
-			return hs.MsgRes("success")
+			return hs.MsgRes(s)
 		}
 	}
 }
