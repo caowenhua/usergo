@@ -5,13 +5,17 @@ import (
 	"errors"
 	"fmt"
 
-	"../bean"
+	"me.user/bean"
 
 	"github.com/Centny/gwf/dbutil"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var cdb *sql.DB
+
+func GetDb() *sql.DB {
+	return cdb
+}
 
 func CSetupDb() {
 	var err error
@@ -57,10 +61,7 @@ func CLogin(account string, password string) (user bean.User, err error) {
 
 func CIsUserExistWithId(account string, password string) (bool, int64) {
 	ac := []bean.Account{}
-	m, e := dbutil.DbQuery(cdb, "select * from tb_account where account=? and password=?", account, password)
-	fmt.Println(m, e)
 	err := dbutil.DbQueryS(cdb, &ac, "select * from tb_account where account=? and password=?", account, password)
-	fmt.Println(err)
 	if err == nil && len(ac) > 0 {
 		return true, ac[0].UserId
 	} else {
@@ -72,7 +73,7 @@ func CIsUserExist(account string, password string) bool {
 	ac := []bean.Account{}
 	err := dbutil.DbQueryS(cdb, &ac, "select * from tb_account where account=? and password=?", account, password)
 
-	if err == nil {
+	if err == nil && len(ac) > 0 {
 		return true
 	} else {
 		return false

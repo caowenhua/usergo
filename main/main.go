@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"../network"
+	"me.user/network"
 )
 
 func main() {

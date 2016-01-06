@@ -6,10 +6,12 @@ import (
 
 	"github.com/Centny/gwf/routing"
 
-	"../db"
+	"me.user/db"
 )
 
-func cregister(hs *routing.HTTPSession) routing.HResult {
+func Cregister(hs *routing.HTTPSession) routing.HResult {
+	//	fmt.Println(hs.W, *hs.R, hs.S, *hs.Mux)
+	//	fmt.Println(*hs.Mux)
 	var account string
 	var password string
 	err := hs.ValidCheckVal(`
@@ -28,7 +30,7 @@ func cregister(hs *routing.HTTPSession) routing.HResult {
 	}
 }
 
-func clogin(hs *routing.HTTPSession) routing.HResult {
+func Clogin(hs *routing.HTTPSession) routing.HResult {
 	var account string
 	var password string
 	err := hs.ValidCheckVal(`
@@ -47,7 +49,7 @@ func clogin(hs *routing.HTTPSession) routing.HResult {
 	}
 }
 
-func cshowUser(hs *routing.HTTPSession) routing.HResult {
+func CshowUser(hs *routing.HTTPSession) routing.HResult {
 	var page int64
 	var pageCount int64
 	err := hs.ValidCheckVal(`
@@ -62,7 +64,7 @@ func cshowUser(hs *routing.HTTPSession) routing.HResult {
 	}
 }
 
-func cfillInfo(hs *routing.HTTPSession) routing.HResult {
+func CfillInfo(hs *routing.HTTPSession) routing.HResult {
 	var username string
 	var userid int64
 	var age int64
@@ -85,7 +87,7 @@ func cfillInfo(hs *routing.HTTPSession) routing.HResult {
 	}
 }
 
-func cdeleteUser(hs *routing.HTTPSession) routing.HResult {
+func CdeleteUser(hs *routing.HTTPSession) routing.HResult {
 	var userid int64
 	err := hs.ValidCheckVal(`
 		userid,R|I,R:0;
@@ -104,13 +106,14 @@ func cdeleteUser(hs *routing.HTTPSession) routing.HResult {
 
 func CListen() {
 	db.CSetupDb()
+	fmt.Println("listen begin")
 	sb := routing.NewSrvSessionBuilder("", "/", "example", 60*60*1000, 10000)
 	mux := routing.NewSessionMux("", sb)
-	mux.HFunc("/user/reg", cregister)
-	mux.HFunc("/user/login", clogin)
-	mux.HFunc("/user/delete", cdeleteUser)
-	mux.HFunc("/account/showuser", cshowUser)
-	mux.HFunc("/user/fill", cfillInfo)
+	mux.HFunc("/user/reg", Cregister)
+	mux.HFunc("/user/login", Clogin)
+	mux.HFunc("/user/delete", CdeleteUser)
+	mux.HFunc("/account/showuser", CshowUser)
+	mux.HFunc("/user/fill", CfillInfo)
 	//	mux.HFunc("^/api/list(\\?.*)?$", List)
 	//	mux.HFunc("^/api/query(\\?.*)?$", Query)
 	fmt.Println(http.ListenAndServe(":9090", mux))
